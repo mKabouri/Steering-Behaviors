@@ -36,6 +36,11 @@ class SteeringEnvironment():
                     if event.key == pygame.K_q:
                         print("Exiting")
                         running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        mouse_x, mouse_y = event.pos
+                        self.add_particule((mouse_x, mouse_y))
+
             
             # Steering loop
             self.__draw_target(self.target_coord)

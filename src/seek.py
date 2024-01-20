@@ -17,7 +17,7 @@ class SeekParticule(Particule):
     def particule_behavior(self):
         error = (self.target_x-self.x, self.target_y-self.y)
         distance = np.linalg.norm(error, ord=2)
-        if distance < 1:
+        if distance < 0.5:
             return True
         if distance > 0:
             error = error/distance
@@ -43,8 +43,6 @@ class SeekParticule(Particule):
             self.v_y = (self.v_y/new_speed)*config.MAX_SPEED
 
         # Update postion        
-        print(f"Position from {(self.x, self.y)}", end=' ')
         self.x += self.v_x
         self.y += self.v_y
-        print(f"to {(self.x, self.y)}")
         return True
