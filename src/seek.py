@@ -8,13 +8,24 @@ class SeekParticule(Particule):
             coordinate,
             velocity,
             acceleration,
-            target_coord
+            targets  
         ):
         super().__init__(coordinate, velocity, acceleration)
-        self.target_x = target_coord[0]
-        self.target_y = target_coord[1]
+        self.targets = targets
+
+    def update_target(self):
+        """
+        Returns the nearest target coordinates or current coordinates to stay in its location
+        """
+        if self.targets:
+            self.target_x, self.target_y = min(self.targets, key=lambda t: np.linalg.norm(np.array(t) - np.array((self.x, self.y))))
+        else:
+            self.target_x, self.target_y = self.x, self.y
 
     def particule_behavior(self):
+        # If the nearest target changes
+        self.update_target()
+
         error = (self.target_x-self.x, self.target_y-self.y)
         distance = np.linalg.norm(error, ord=2)
         if distance < 0.5:
