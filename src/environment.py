@@ -3,16 +3,22 @@ import numpy as np
 
 import config
 from seek import SeekParticule
+from buttons import draw_restart_button
 
 class SteeringEnvironment():
-    def __init__(self, screen):
+    def __init__(self, screen, behavior):
         self.screen = screen
         # Two lists to store targets and particules
+        self.behavior = behavior
         self.targets = []
         self.particules: list[SeekParticule] = []
     
+    def reset_environment(self):
+        self.targets.clear()
+        self.particules.clear()
+
     def add_particule(self, coord):
-        new_particule = SeekParticule(coord, config.INITIAL_VELOCITY, config.INITIAL_FORCE, self.targets)
+        new_particule = self.behavior(coord, config.INITIAL_VELOCITY, config.INITIAL_FORCE, self.targets)
         print(f"New particule added at postion: {(new_particule.x, new_particule.y)}")
         self.particules.append(new_particule)
         return True
@@ -32,6 +38,9 @@ class SteeringEnvironment():
         running = True
         while running:
             self.screen.fill((255, 255, 255))
+            restart_button_rect = draw_restart_button(self.screen)
+            self.__draw_targets()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -43,8 +52,11 @@ class SteeringEnvironment():
                     # If left click add particule. If right click to add target.
                     if event.button == 1:
                         mouse_x, mouse_y = event.pos
-                        self.add_particule((mouse_x, mouse_y))
-                    elif event.button == 3:
+                        if restart_button_rect.collidepoint(mouse_x, mouse_y):
+                            self.reset_environment()
+                        else:
+                            self.add_particule((mouse_x, mouse_y))
+                    elif event.button == 3:  # Right click
                         mouse_x, mouse_y = event.pos
                         self.add_target((mouse_x, mouse_y))
 

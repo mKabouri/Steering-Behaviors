@@ -10,8 +10,7 @@ class SeekParticule(Particule):
             acceleration,
             targets  
         ):
-        super().__init__(coordinate, velocity, acceleration)
-        self.targets = targets
+        super().__init__(coordinate, velocity, acceleration, targets)
 
     def update_target(self):
         """

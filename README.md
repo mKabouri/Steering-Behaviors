@@ -13,8 +13,10 @@
 
 ### Done
 1- Seek:
-    1.1- Basic seek behavior with one target
-    1.2- Muti target and choose the nearest one
+
+    1.1- Basic seek behavior with one target and muti-particules (Adding them with left right on the mouse)
+
+    1.2- Muti-target (Adding them with click right on the mouse) and choose the nearest one
 
 
 ### Reference:

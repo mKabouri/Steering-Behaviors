@@ -15,12 +15,14 @@ class Particule(ABC):
             self,
             coordinate,
             velocity,
-            acceleration
+            acceleration,
+            targets
         ):
         self.x, self.y = coordinate
         self.v_x, self.v_y = velocity
         self.acc_x, self.acc_y = acceleration
         self.color = random.sample(config.POSSIBLE_COLORS, 1)[0]
+        self.targets = targets
 
     def draw_particule(self, screen):
         # The top of the triangle should be in the direction of the target
