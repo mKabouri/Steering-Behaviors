@@ -1,6 +1,7 @@
 # Global variables
 # Target color
 YELLOW = (226, 255, 33)
+GRAY = (200, 200, 200)
 
 # Particule colors
 POSSIBLE_COLORS = [
@@ -21,3 +22,4 @@ HEIGHT = 700
 FPS = 20
 RESTART_BUTTON_COLOR = (0, 128, 255)
 TEXT_COLOR = (0, 0, 0)
+FLEE_RADIUS = 50

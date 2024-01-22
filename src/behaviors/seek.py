@@ -1,5 +1,5 @@
 import numpy as np
-from particule import Particule
+from behaviors.base_particule import Particule
 import config
 
 class SeekParticule(Particule):
@@ -13,9 +13,6 @@ class SeekParticule(Particule):
         super().__init__(coordinate, velocity, acceleration, targets)
 
     def update_target(self):
-        """
-        Returns the nearest target coordinates or current coordinates to stay in its location
-        """
         if self.targets:
             self.target_x, self.target_y = min(self.targets, key=lambda t: np.linalg.norm(np.array(t) - np.array((self.x, self.y))))
         else:
@@ -27,7 +24,7 @@ class SeekParticule(Particule):
 
         error = (self.target_x-self.x, self.target_y-self.y)
         distance = np.linalg.norm(error, ord=2)
-        if distance < 0.5:
+        if abs(error[0]) < 6 and abs(error[1]) < 6:
             return True
         if distance > 0:
             error = error/distance

@@ -24,6 +24,7 @@ class Particule(ABC):
         self.color = random.sample(config.POSSIBLE_COLORS, 1)[0]
         self.targets = targets
 
+
     def draw_particule(self, screen):
         # The top of the triangle should be in the direction of the target
         angle = np.arctan2(self.v_y, self.v_x)
@@ -34,6 +35,13 @@ class Particule(ABC):
 
         pygame.draw.polygon(screen, self.color, triangle_coords)
         pygame.draw.circle(screen, self.color, [int(self.x), int(self.y)], 3)
+
+    @abstractmethod
+    def update_target(self):
+        """
+        Update target
+        """
+        pass
 
     @abstractmethod
     def particule_behavior(self):

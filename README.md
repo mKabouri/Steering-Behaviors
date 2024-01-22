@@ -21,4 +21,4 @@
 
 ### Reference:
 
-https://www.red3d.com/cwr/steer/
+https://www.red3d.com/cwr/steer/gdc99/
