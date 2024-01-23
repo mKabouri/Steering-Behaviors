@@ -1,6 +1,6 @@
 from behaviors.base_particule import Particule
 
-class AvoiderBehavior(Particule):
+class CircuitBehavior(Particule):
     def __init__(self, coordinate, velocity, acceleration, targets):
         super().__init__(coordinate, velocity, acceleration, targets)
 

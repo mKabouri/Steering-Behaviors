@@ -2,6 +2,7 @@
 # Target color
 YELLOW = (226, 255, 33)
 GRAY = (200, 200, 200)
+CYAN = (0, 255, 255)
 
 # Particule colors
 POSSIBLE_COLORS = [
@@ -17,9 +18,16 @@ MAX_SPEED = 8
 MAX_FORCE = 10
 
 # Pygame setting
-WIDTH = 700
-HEIGHT = 700
 FPS = 20
 RESTART_BUTTON_COLOR = (0, 128, 255)
 TEXT_COLOR = (0, 0, 0)
 FLEE_RADIUS = 50
+
+WIDTH = 700
+HEIGHT = 700
+CIRCUIT_COORDS = (
+    (100, 100),
+    (100, 300),
+    (300, 600),
+    (600, 400)
+)
