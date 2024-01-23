@@ -31,3 +31,4 @@ CIRCUIT_COORDS = (
     (300, 600),
     (600, 400)
 )
+POINT_REACHED_THRESHOLD = 4 # used in circuit.py

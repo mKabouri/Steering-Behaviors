@@ -68,12 +68,12 @@ class SteeringEnvironment():
             lerp = i/num_points
             color = start_color.lerp(end_color, lerp)
 
-            width = int(self._cwidth / 2 * (1 + math.sin(lerp * math.pi)))
+            width = int(self._cwidth/2*(1+math.sin(lerp*math.pi)))
 
             pygame.draw.line(self.screen, color, p1, p2, width)
 
-            shadow_color = (color.r // 2, color.g // 2, color.b // 2)
-            pygame.gfxdraw.filled_circle(self.screen, *p1, width + 2, shadow_color)
+            shadow_color = (color.r//2, color.g//2, color.b//2)
+            pygame.gfxdraw.filled_circle(self.screen, *p1, width+2, shadow_color)
 
         for p in self.circuit_coords:
             pygame.gfxdraw.filled_circle(self.screen, *p, 10, pygame.Color(255, 255, 0))
@@ -111,7 +111,7 @@ class SteeringEnvironment():
 
             # Steering loop
             if self.behavior == CircuitBehavior:
-                self.__draw_circuit
+                self.__draw_circuit()
             elif self.behavior == FleeParticule or self.behavior == SeekParticule:
                 self.__draw_targets()
             for particule in self.particules:

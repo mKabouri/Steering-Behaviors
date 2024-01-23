@@ -2,8 +2,14 @@ import sys, math
 import pygame
 import pygame.draw
 
-__circuit__ = ((10,10),(20,20),(35,70),(600, 380),(550,40))
-__screenSize__ = (640,480)
+__circuit__ = (
+    (100, 100),
+    (100, 300),
+    (300, 600),
+    (600, 400)
+)
+
+__screenSize__ = (700,700)
 
 # Utility functions for handling points
 # I should probably build a class of vectors
@@ -79,8 +85,8 @@ class SetOfVehicules:
                 offset = vecDiff(v2._coords, v1._coords)
                 al = approximateLength(offset)
                 if al != 0 and al < v1._radius + v2._radius - 1: # collision
-                        v1._coords=(int(v1._coords[0]+offset[0]/al*(v1._radius+v2._radius)),
-                                    int(v2._coords[1]+offset[1]/al*(v1._radius+v2._radius)))
+                    v1._coords=(int(v1._coords[0]+offset[0]/al*(v1._radius+v2._radius)),
+                                int(v2._coords[1]+offset[1]/al*(v1._radius+v2._radius)))
 
     def updatePositions(self):
         for v in self._vehicules:

@@ -12,5 +12,5 @@ from behaviors.flock import FlockingBehavior
 if __name__ == '__main__':
     screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
 
-    environment = SteeringEnvironment(screen, FleeParticule)
+    environment = SteeringEnvironment(screen, CircuitBehavior)
     environment.draw_environement()
