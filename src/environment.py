@@ -79,6 +79,27 @@ class SteeringEnvironment():
             pygame.gfxdraw.filled_circle(self.screen, *p, 10, pygame.Color(255, 255, 0))
             pygame.gfxdraw.aacircle(self.screen, *p, 10, pygame.Color(0, 0, 0))
         pygame.draw.lines(self.screen, self._cfore, True, self.circuit_coords, 2)
+    
+    def handle_collisions(self):
+        for i in range(len(self.particules)):
+            for j in range(i + 1, len(self.particules)):
+                particule1 = self.particules[i]
+                particule2 = self.particules[j]
+                # Calculate the distance between two particules
+                dx = particule1.x - particule2.x
+                dy = particule1.y - particule2.y
+                distance = math.sqrt(dx**2 + dy**2)
+
+                # Check if the distance is less than the sum of their radii
+                if distance < config.COLLISION_THRESHOLD:
+                    # Simple collision response
+                    overlap = config.COLLISION_THRESHOLD - distance
+                    dx /= distance
+                    dy /= distance
+                    particule1.x += dx * overlap / 2
+                    particule1.y += dy * overlap / 2
+                    particule2.x -= dx * overlap / 2
+                    particule2.y -= dy * overlap / 2
 
     def draw_environement(self):
         pygame.init()
@@ -110,6 +131,7 @@ class SteeringEnvironment():
                         self.add_target((mouse_x, mouse_y))
 
             # Steering loop
+            self.handle_collisions()
             if self.behavior == CircuitBehavior:
                 self.__draw_circuit()
             elif self.behavior == FleeParticule or self.behavior == SeekParticule:
