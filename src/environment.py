@@ -16,7 +16,7 @@ class SteeringEnvironment():
     _cwidth = 30
     def __init__(self, screen, behavior):
         self.screen = screen
-        # Two lists to store targets and particules
+        # Three lists to store targets, particules and obstacles (in case of circuit behavior)
         self.behavior = behavior
         self.targets = []
         self.particules: list[behavior] = []
@@ -82,13 +82,12 @@ class SteeringEnvironment():
             for j in range(i + 1, len(self.particules)):
                 particule1 = self.particules[i]
                 particule2 = self.particules[j]
-                # Calculate the distance between two particules
+
                 dx = particule1.x-particule2.x
                 dy = particule1.y-particule2.y
                 distance = math.sqrt(dx**2 + dy**2)
-                # Check if the distance is less than the sum of their radii
+                # Check if the distance is less than collision threshold fixed in config.py
                 if distance < config.COLLISION_THRESHOLD:
-                    # Simple collision response
                     overlap = config.COLLISION_THRESHOLD-distance
                     dx /= distance
                     dy /= distance
@@ -131,7 +130,7 @@ class SteeringEnvironment():
 
     def __draw_obstacles(self):
         for obstacle in self.obstacles:
-            outer_radius = 20
+            outer_radius = config.OBSTACLE_RADIUS
             inner_radius = 10
             pattern_radius = 15
             num_spikes = 6
@@ -187,7 +186,10 @@ class SteeringEnvironment():
             elif self.behavior == FleeParticule or self.behavior == SeekParticule:
                 self.__draw_targets()
             for particule in self.particules:
-                particule.particule_behavior()
+                if self.behavior == CircuitBehavior:
+                    particule.particule_behavior(self.obstacles)
+                else:
+                    particule.particule_behavior()
                 particule.draw_particule(self.screen)
             self.__draw_obstacles()
 

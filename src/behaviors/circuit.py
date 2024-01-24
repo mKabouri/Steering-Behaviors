@@ -48,12 +48,16 @@ class CircuitBehavior(Particule):
 
         return closest_point, closest_segment_index
 
-    def particule_behavior(self):
+    def particule_behavior(self, obstacles):
         self.update_target()
+        avoidance_force = self.calculate_avoidance_force(obstacles)
         desired_velocity = np.subtract(self.target, (self.x, self.y))
         desired_velocity = desired_velocity/np.linalg.norm(desired_velocity, ord=2)*config.MAX_SPEED
         steering = np.subtract(desired_velocity, (self.v_x, self.v_y))
         steering = np.clip(steering, -config.MAX_FORCE, config.MAX_FORCE)
+
+        # Apply avoidance force
+        steering += avoidance_force
 
         self.acc_x, self.acc_y = steering
         self.v_x += self.acc_x
@@ -61,6 +65,18 @@ class CircuitBehavior(Particule):
         self.v_x, self.v_y = self.__limit_velocity(self.v_x, self.v_y)
         self.x += self.v_x
         self.y += self.v_y
+
+    def calculate_avoidance_force(self, obstacles):
+        avoidance_force = np.array([0.0, 0.0])
+        for obstacle in obstacles:
+            obstacle_pos = np.array(obstacle)
+            particule_pos = np.array([self.x, self.y])
+            distance = np.linalg.norm(particule_pos - obstacle_pos)
+            if distance < config.OBSTACLE_AVOIDANCE_RADIUS:
+                away_vector = particule_pos - obstacle_pos
+                away_vector /= distance  # Normalize
+                avoidance_force += away_vector
+        return avoidance_force * config.AVOIDANCE_STRENGTH
 
     def __limit_velocity(self, vx, vy):
         speed = np.sqrt(vx**2+vy**2)
