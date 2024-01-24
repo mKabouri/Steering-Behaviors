@@ -1,4 +1,4 @@
-# Steering-Behavior
+# Steering-Behaviors
 
 ### To do:
 2- Pursuit
