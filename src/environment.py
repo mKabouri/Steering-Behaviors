@@ -20,20 +20,20 @@ class SteeringEnvironment():
         self.behavior = behavior
         self.targets = []
         self.particules: list[behavior] = []
+        self.obstacles = []
 
         self.circuit_coords = config.CIRCUIT_COORDS
     
     def reset_environment(self):
         self.targets.clear()
         self.particules.clear()
+        self.obstacles.clear()
 
     def add_particule(self, coord):
         # Generate a random angle
         angle = random.uniform(0, 2*math.pi)
-
         initial_velocity_x = config.INITIAL_VELOCITY[0]*math.cos(angle)
         initial_velocity_y = config.INITIAL_VELOCITY[1]*math.sin(angle)
-
         new_particule = self.behavior(coord, (initial_velocity_x, initial_velocity_y), config.INITIAL_FORCE, self.targets)        
         print(f"New particule added at position: {(new_particule.x, new_particule.y)} with direction: {(initial_velocity_x, initial_velocity_y)}")
         self.particules.append(new_particule)
@@ -64,17 +64,14 @@ class SteeringEnvironment():
         for i in range(num_points):
             p1 = self.circuit_coords[i]
             p2 = self.circuit_coords[(i+1) % num_points]
-
             lerp = i/num_points
             color = start_color.lerp(end_color, lerp)
-
             width = int(self._cwidth/2*(1+math.sin(lerp*math.pi)))
 
             pygame.draw.line(self.screen, color, p1, p2, width)
 
             shadow_color = (color.r//2, color.g//2, color.b//2)
             pygame.gfxdraw.filled_circle(self.screen, *p1, width+2, shadow_color)
-
         for p in self.circuit_coords:
             pygame.gfxdraw.filled_circle(self.screen, *p, 10, pygame.Color(255, 255, 0))
             pygame.gfxdraw.aacircle(self.screen, *p, 10, pygame.Color(0, 0, 0))
@@ -86,20 +83,69 @@ class SteeringEnvironment():
                 particule1 = self.particules[i]
                 particule2 = self.particules[j]
                 # Calculate the distance between two particules
-                dx = particule1.x - particule2.x
-                dy = particule1.y - particule2.y
+                dx = particule1.x-particule2.x
+                dy = particule1.y-particule2.y
                 distance = math.sqrt(dx**2 + dy**2)
-
                 # Check if the distance is less than the sum of their radii
                 if distance < config.COLLISION_THRESHOLD:
                     # Simple collision response
-                    overlap = config.COLLISION_THRESHOLD - distance
+                    overlap = config.COLLISION_THRESHOLD-distance
                     dx /= distance
                     dy /= distance
-                    particule1.x += dx * overlap / 2
-                    particule1.y += dy * overlap / 2
-                    particule2.x -= dx * overlap / 2
-                    particule2.y -= dy * overlap / 2
+                    particule1.x += dx*overlap/2
+                    particule1.y += dy*overlap/2
+                    particule2.x -= dx*overlap/2
+                    particule2.y -= dy*overlap/2
+
+    def is_on_circuit(self, coord):
+        for i in range(len(self.circuit_coords)):
+            point_a = self.circuit_coords[i]
+            point_b = self.circuit_coords[(i+1)%len(self.circuit_coords)]
+            # Check if 'coord' is near the line segment from point_a to point_b
+            if self.is_near_line_segment(coord, point_a, point_b, threshold=config.OBSTACLE_THRESHOLD):
+                return True
+        return False
+
+    def is_near_line_segment(self, coord, point_a, point_b, threshold):
+        # Calculate the nearest point on the line segment to 'coord'
+        nearest_point = self.nearest_point_on_line_segment(coord, point_a, point_b)
+        # Check if 'coord' is within the 'threshold' distance of the line segment
+        distance = math.sqrt((nearest_point[0]-coord[0])**2 + (nearest_point[1]-coord[1])**2)
+        return distance <= threshold
+
+    def nearest_point_on_line_segment(self, coord, point_a, point_b):
+        # See vector projection formula for details
+        a_to_p = (coord[0]-point_a[0], coord[1]-point_a[1])
+        a_to_b = (point_b[0]-point_a[0], point_b[1]-point_a[1])
+        a_to_b_squared = a_to_b[0]**2 + a_to_b[1]**2
+        dot_product = a_to_p[0]*a_to_b[0] + a_to_p[1]*a_to_b[1]
+        t = max(0, min(1, dot_product/a_to_b_squared))
+        return (point_a[0]+t*a_to_b[0], point_a[1]+t*a_to_b[1])
+
+    def add_obstacle(self, coord):
+        if self.is_on_circuit(coord):
+            self.obstacles.append(coord)
+            print(f"Obstacle added at {coord}")
+        else:
+            print("Obstacle not on circuit")
+
+    def __draw_obstacles(self):
+        for obstacle in self.obstacles:
+            outer_radius = 20
+            inner_radius = 10
+            pattern_radius = 15
+            num_spikes = 6
+            spike_length = 10
+            obstacle_color = (244, 67, 54)
+            pattern_color = (76, 175, 80)
+            pygame.draw.circle(self.screen, obstacle_color, obstacle, outer_radius)
+            pygame.draw.circle(self.screen, (255, 255, 255), obstacle, inner_radius)
+            pygame.draw.circle(self.screen, pattern_color, obstacle, pattern_radius, 1)
+            for i in range(num_spikes):
+                angle = (2*math.pi/num_spikes)*i
+                end_x = obstacle[0]+math.cos(angle)*(outer_radius+spike_length)
+                end_y = obstacle[1]+math.sin(angle)*(outer_radius+spike_length)
+                pygame.draw.line(self.screen, pattern_color, obstacle, (end_x, end_y), 2)
 
     def draw_environement(self):
         pygame.init()
@@ -113,6 +159,7 @@ class SteeringEnvironment():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    print("Exiting")
                     running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
@@ -128,7 +175,10 @@ class SteeringEnvironment():
                             self.add_particule((mouse_x, mouse_y))
                     elif event.button == 3:  # Right click
                         mouse_x, mouse_y = event.pos
-                        self.add_target((mouse_x, mouse_y))
+                        if self.behavior == FleeParticule or self.behavior == SeekParticule:
+                            self.add_target((mouse_x, mouse_y))
+                        elif self.behavior == CircuitBehavior:
+                            self.add_obstacle((mouse_x, mouse_y))
 
             # Steering loop
             self.handle_collisions()
@@ -139,6 +189,7 @@ class SteeringEnvironment():
             for particule in self.particules:
                 particule.particule_behavior()
                 particule.draw_particule(self.screen)
+            self.__draw_obstacles()
 
             pygame.display.flip()
             clock.tick(config.FPS)

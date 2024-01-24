@@ -32,3 +32,4 @@ CIRCUIT_COORDS = (
 )
 POINT_REACHED_THRESHOLD = 3 # In circuit.py
 COLLISION_THRESHOLD = 1 # In environment.py
+OBSTACLE_THRESHOLD = 10 # In environment.py
