@@ -5,7 +5,6 @@ from environment import SteeringEnvironment
 
 from behaviors.seek import SeekParticule
 from behaviors.flee import FleeParticule
-from behaviors.pursuit import PursuitBehavior
 from behaviors.circuit import CircuitBehavior
 from behaviors.flock import FlockingBehavior
 

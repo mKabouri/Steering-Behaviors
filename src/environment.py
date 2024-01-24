@@ -2,11 +2,11 @@ import pygame
 import pygame.gfxdraw
 import math
 import random
+import numpy as np
 
 import config
 from buttons import draw_restart_button
 from behaviors.seek import SeekParticule
-from behaviors.pursuit import PursuitBehavior
 from behaviors.flee import FleeParticule 
 from behaviors.circuit import CircuitBehavior
 
@@ -52,7 +52,7 @@ class SteeringEnvironment():
                 for i in range(5, 0, -1):
                     color_index = i%2
                     pygame.draw.circle(self.screen, colors[color_index], coord, outer_radius-(ring_width*(5-i)), ring_width)
-        elif self.behavior == PursuitBehavior:
+        elif self.behavior == CircuitBehavior:
             for coord in self.targets:
                 pygame.draw.circle(self.screen, colors[0], coord, 6, 0)
                 pygame.draw.circle(self.screen, colors[1], coord, 6, 1)
