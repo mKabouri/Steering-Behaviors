@@ -72,7 +72,7 @@ class CircuitBehavior(Particule):
 
     def particule_behavior(self):
         # Update the current segment index if the particule reaches the next point
-        next_point = self._circuit_coords[(self.current_segment_index + 1) % len(self._circuit_coords)]
+        next_point = self._circuit_coords[(self.current_segment_index + 1)%len(self._circuit_coords)]
         if np.linalg.norm(np.array((self.x, self.y)) - np.array(next_point)) < config.POINT_REACHED_THRESHOLD:
             self.current_segment_index = (self.current_segment_index + 1) % len(self._circuit_coords)
 

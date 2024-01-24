@@ -218,6 +218,7 @@ class Scene:
     def eventClic(self,coord,b):
         print("Adding Vehicule at ",coord[0],",",coord[1])
         self._vehicules.append(Vehicule((coord[0],coord[1])))
+
     def recordMouseMove(self, coord):
         self._mouseCoords = coord
 

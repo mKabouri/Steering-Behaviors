@@ -2,12 +2,11 @@
 # Target color
 YELLOW = (226, 255, 33)
 GRAY = (200, 200, 200)
-CYAN = (0, 255, 255)
+MAUVE = (236, 174, 249)
 
 # Particule colors
 POSSIBLE_COLORS = [
     (253, 86, 86), # RED
-    (79, 255, 73), # GREEN
     (98, 156, 255) # BLUE
 ]
 

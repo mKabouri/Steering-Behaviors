@@ -59,11 +59,11 @@ class SteeringEnvironment():
 
     def __draw_circuit(self):
         start_color = pygame.Color(config.YELLOW)
-        end_color = pygame.Color(config.CYAN)
+        end_color = pygame.Color(config.MAUVE)
         num_points = len(self.circuit_coords)
         for i in range(num_points):
             p1 = self.circuit_coords[i]
-            p2 = self.circuit_coords[(i + 1) % num_points]
+            p2 = self.circuit_coords[(i+1) % num_points]
 
             lerp = i/num_points
             color = start_color.lerp(end_color, lerp)
