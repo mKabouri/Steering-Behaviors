@@ -39,12 +39,12 @@ class SteeringEnvironment():
             particule.neighbors = [p for p in self.particules if p != particule and np.linalg.norm(np.array([p.x, p.y]) - np.array([particule.x, particule.y])) < config.NEIGHBOR_RADIUS]
 
     def add_particule(self, coord):
-        # Generate a random angle
         if self.behavior == FlockingBehavior:
             velocity = np.random.uniform(-1, 1, 2)
             particule = FlockingBehavior(coord, velocity, (0, 0), None, [])
             self.particules.append(particule)
             return True
+        # Generate a random angle
         angle = random.uniform(0, 2*math.pi)
         initial_velocity_x = config.INITIAL_VELOCITY[0]*math.cos(angle)
         initial_velocity_y = config.INITIAL_VELOCITY[1]*math.sin(angle)
@@ -120,9 +120,7 @@ class SteeringEnvironment():
         return False
 
     def is_near_line_segment(self, coord, point_a, point_b, threshold):
-        # Calculate the nearest point on the line segment to 'coord'
         nearest_point = self.nearest_point_on_line_segment(coord, point_a, point_b)
-        # Check if 'coord' is within the 'threshold' distance of the line segment
         distance = math.sqrt((nearest_point[0]-coord[0])**2 + (nearest_point[1]-coord[1])**2)
         return distance <= threshold
 

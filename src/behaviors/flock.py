@@ -7,7 +7,7 @@ class FlockingBehavior(Particule):
     def __init__(self, coordinate, velocity, acceleration, targets, neighbors, max_speed=15, max_force=5):
         super().__init__(coordinate, velocity, acceleration, targets)
         self.neighbors = neighbors
-        # For random speed at the beginning in the case of flocks
+
         angle = random.uniform(0, 2*np.pi)
         speed = random.uniform(10, 18)
         self.v_x = np.cos(angle)*speed
@@ -44,13 +44,15 @@ class FlockingBehavior(Particule):
         return steer
 
     def alignment(self):
+        """
+        Align with same color group
+        """
         avg_velocity = np.array([0.0, 0.0])
         total = 0
         for neighbor in self.neighbors:
-            if neighbor.color == self.color:  # Only align with same color group
+            if neighbor.color == self.color:
                 avg_velocity += np.array([neighbor.v_x, neighbor.v_y])
                 total += 1
-
         if total > 0:
             avg_velocity /= total
             norm = np.linalg.norm(avg_velocity)

@@ -40,7 +40,7 @@ class CircuitBehavior(Particule):
         closest_segment_index = 0
         for i in range(len(self._circuit_coords)):
             point_a = self._circuit_coords[i]
-            # To don't have out of bounds
+            # Don't have out of bounds
             point_b = self._circuit_coords[(i+1)%len(self._circuit_coords)]
             distance, closest_point_on_segment = self.distance_point_to_segment((self.x, self.y), point_a, point_b)
             if distance < min_distance:

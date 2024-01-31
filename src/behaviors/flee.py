@@ -21,8 +21,8 @@ class FleeParticule(Particule):
     def particule_behavior(self):
         # If the nearest target changes
         self.update_target()
-
-        error = (self.x - self.target_x, self.y - self.target_y)  # Invert direction for fleeing
+        # Invert direction for fleeing
+        error = (self.x - self.target_x, self.y - self.target_y)
         distance = np.linalg.norm(error, ord=2)
         
         if distance < config.FLEE_RADIUS:
