@@ -55,10 +55,11 @@ class FlockingBehavior(Particule):
                 total += 1
         if total > 0:
             avg_velocity /= total
-            desired_velocity = (avg_velocity/np.linalg.norm(avg_velocity))*self.MAX_SPEED
-            steer = desired_velocity-np.array([self.v_x, self.v_y])
-            if np.linalg.norm(steer, ord=2) > 0:
-                steer = (steer / np.linalg.norm(steer, ord=2)) * self.MAX_SPEED
+            if np.linalg.norm(avg_velocity) > 0:
+                desired_velocity = (avg_velocity/np.linalg.norm(avg_velocity))*self.MAX_SPEED
+                steer = desired_velocity - np.array([self.v_x, self.v_y])
+                if np.linalg.norm(steer) > 0:
+                    steer = (steer/np.linalg.norm(steer))*self.MAX_SPEED
             steer = np.clip(steer, -self.MAX_FORCE, self.MAX_FORCE)
         return steer
 
