@@ -201,6 +201,8 @@ class SteeringEnvironment():
             for particule in self.particules:
                 if self.behavior == CircuitBehavior:
                     particule.particule_behavior(self.obstacles)
+                elif self.behavior == FlockingBehavior:
+                    particule.particule_behavior(self.particules)
                 else:
                     particule.particule_behavior()
                 particule.draw_particule(self.screen)

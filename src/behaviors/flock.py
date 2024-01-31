@@ -4,7 +4,7 @@ import config
 from behaviors.base_particule import Particule
 
 class FlockingBehavior(Particule):
-    def __init__(self, coordinate, velocity, acceleration, targets, neighbors, max_speed=20, max_force=5):
+    def __init__(self, coordinate, velocity, acceleration, targets, neighbors, max_speed=15, max_force=5):
         super().__init__(coordinate, velocity, acceleration, targets)
         self.neighbors = neighbors
         # For random speed at the beginning in the case of flocks
@@ -42,26 +42,22 @@ class FlockingBehavior(Particule):
         return steer
 
     def alignment(self):
-        """
-        Align velocity with neighbors of the same color
-        """
-        steer = np.array([0.0, 0.0])
-
         avg_velocity = np.array([0.0, 0.0])
         total = 0
         for neighbor in self.neighbors:
-            if neighbor.color == self.color:
+            if neighbor.color == self.color:  # Only align with same color group
                 avg_velocity += np.array([neighbor.v_x, neighbor.v_y])
                 total += 1
+
         if total > 0:
             avg_velocity /= total
-            if np.linalg.norm(avg_velocity) > 0:
-                desired_velocity = (avg_velocity/np.linalg.norm(avg_velocity))*self.MAX_SPEED
+            norm = np.linalg.norm(avg_velocity)
+            if norm > 0:
+                desired_velocity = (avg_velocity / norm)*self.MAX_SPEED
                 steer = desired_velocity - np.array([self.v_x, self.v_y])
-                if np.linalg.norm(steer) > 0:
-                    steer = (steer/np.linalg.norm(steer))*self.MAX_SPEED
-            steer = np.clip(steer, -self.MAX_FORCE, self.MAX_FORCE)
-        return steer
+                return np.clip(steer, -self.MAX_FORCE, self.MAX_FORCE)
+        return np.array([0.0, 0.0])
+
 
     def cohesion(self):
         """
@@ -83,13 +79,38 @@ class FlockingBehavior(Particule):
             return steer
         return np.array([0.0, 0.0])
 
-    def particule_behavior(self):
+    def inter_group_avoidance(self, all_particles):
+        avoidance_radius = 20
+        # avoidance_radius = config.INTER_GROUP_AVOIDANCE_RADIUS
+        steer = np.array([0.0, 0.0])
+        total = 0
+
+        for other_particle in all_particles:
+            if other_particle.color != self.color:
+                diff = np.array([self.x - other_particle.x, self.y - other_particle.y])
+                dist = np.linalg.norm(diff)
+                if dist < avoidance_radius:
+                    steer += diff / (dist if dist != 0 else 1)
+                    total += 1
+
+        if total > 0:
+            steer /= total
+            if np.linalg.norm(steer) > 0:
+                steer = (steer / np.linalg.norm(steer)) * self.MAX_SPEED
+
+        return steer
+
+    def particule_behavior(self, all_particules):
         sep = self.separation()
         ali = self.alignment()
         coh = self.cohesion()
 
         # Apply the behaviors
         self.acc_x, self.acc_y = 1.2*sep + 2*ali + coh
+
+        inter_group_force = self.inter_group_avoidance(all_particules)
+        self.acc_x += inter_group_force[0]
+        self.acc_y += inter_group_force[1]
 
         # Update velocity and position as usual
         self.v_x += self.acc_x
