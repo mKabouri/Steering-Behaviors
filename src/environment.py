@@ -9,6 +9,7 @@ from buttons import draw_restart_button
 from behaviors.seek import SeekParticule
 from behaviors.flee import FleeParticule 
 from behaviors.circuit import CircuitBehavior
+from behaviors.flock import FlockingBehavior
 
 class SteeringEnvironment():
     _cback = (128, 128, 128)
@@ -30,8 +31,18 @@ class SteeringEnvironment():
         self.particules.clear()
         self.obstacles.clear()
 
+    def update_neighbors(self):
+        # This is for flocking behavior
+        for particule in self.particules:
+            particule.neighbors = [p for p in self.particules if p != particule and np.linalg.norm(np.array([p.x, p.y]) - np.array([particule.x, particule.y])) < config.NEIGHBOR_RADIUS]
+
     def add_particule(self, coord):
         # Generate a random angle
+        if self.behavior == FlockingBehavior:
+            velocity = np.random.uniform(-1, 1, 2)
+            particule = FlockingBehavior(coord, velocity, (0, 0), None, [])
+            self.particules.append(particule)
+            return True
         angle = random.uniform(0, 2*math.pi)
         initial_velocity_x = config.INITIAL_VELOCITY[0]*math.cos(angle)
         initial_velocity_y = config.INITIAL_VELOCITY[1]*math.sin(angle)
@@ -186,12 +197,14 @@ class SteeringEnvironment():
                 self.__draw_circuit()
             elif self.behavior == FleeParticule or self.behavior == SeekParticule:
                 self.__draw_targets()
+            self.update_neighbors()
             for particule in self.particules:
                 if self.behavior == CircuitBehavior:
                     particule.particule_behavior(self.obstacles)
                 else:
                     particule.particule_behavior()
                 particule.draw_particule(self.screen)
+            
             self.__draw_obstacles()
 
             pygame.display.flip()

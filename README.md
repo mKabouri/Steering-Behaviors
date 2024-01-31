@@ -1,5 +1,11 @@
 # Steering-Behaviors
 
+### Motivation:
+
+### Description:
+
+### Commands:
+
 ### To do:
 4- multi-particules (Flocking):
 
@@ -9,7 +15,7 @@
     
     4.3- alignement, cohesion, separation degrees changer
 
-### Done
+### Done:
 1- Seek:
 
     1.1- Basic seek behavior with one target and muti-particules (Adding them with left right on the mouse)
@@ -26,3 +32,5 @@
 ### Reference:
 
 https://www.red3d.com/cwr/steer/gdc99/
+
+### Contributing:

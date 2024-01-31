@@ -12,5 +12,5 @@ from behaviors.random import RandomBehavior
 if __name__ == '__main__':
     screen = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
 
-    environment = SteeringEnvironment(screen, RandomBehavior)
+    environment = SteeringEnvironment(screen, FlockingBehavior)
     environment.draw_environement()

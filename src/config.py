@@ -12,7 +12,9 @@ TEXT_COLOR = (255, 255, 255)
 # Particule colors
 POSSIBLE_COLORS = [
     (253, 86, 86), # RED
-    (98, 156, 255) # BLUE
+    (98, 156, 255), # BLUE
+    (247, 0, 255), # ROSE
+
 ]
 
 INITIAL_VELOCITY = (2, 4)
@@ -41,3 +43,5 @@ OBSTACLE_THRESHOLD = 10 # In environment.py
 OBSTACLE_RADIUS = 20 # In environment.py
 OBSTACLE_AVOIDANCE_RADIUS = 30
 AVOIDANCE_STRENGTH = 5
+SEPARATION_DISTANCE = 35 # In flock.py behavior
+NEIGHBOR_RADIUS = 100 # In environment.py for flock

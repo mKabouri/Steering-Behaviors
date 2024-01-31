@@ -4,12 +4,14 @@ import config
 
 class CircuitBehavior(Particule):
     _circuit_coords = config.CIRCUIT_COORDS
-
-    def __init__(self, coordinate, velocity, acceleration, targets):
+    def __init__(self, coordinate, velocity, acceleration, targets, max_speed=8, max_force=10):
         super().__init__(coordinate, velocity, acceleration, targets)
         self.moving_to_circuit = True
         self.closest_point, self.closest_segment_index = self._find_closest_point_and_segment()
         self.target = self.closest_point
+        
+        self.MAX_SPEED = max_speed
+        self.MAX_FORCE = max_force
 
     def update_target(self):
         """
@@ -52,9 +54,9 @@ class CircuitBehavior(Particule):
         self.update_target()
         avoidance_force = self.calculate_avoidance_force(obstacles)
         desired_velocity = np.subtract(self.target, (self.x, self.y))
-        desired_velocity = desired_velocity/np.linalg.norm(desired_velocity, ord=2)*config.MAX_SPEED
+        desired_velocity = desired_velocity/np.linalg.norm(desired_velocity, ord=2)*self.MAX_SPEED
         steering = np.subtract(desired_velocity, (self.v_x, self.v_y))
-        steering = np.clip(steering, -config.MAX_FORCE, config.MAX_FORCE)
+        steering = np.clip(steering, -self.MAX_FORCE, self.MAX_FORCE)
 
         # Apply avoidance force
         steering += avoidance_force
@@ -80,7 +82,7 @@ class CircuitBehavior(Particule):
 
     def __limit_velocity(self, vx, vy):
         speed = np.sqrt(vx**2+vy**2)
-        if speed > config.MAX_SPEED:
-            vx = (vx/speed)*config.MAX_SPEED
-            vy = (vy/speed)*config.MAX_SPEED
+        if speed > self.MAX_SPEED:
+            vx = (vx/speed)*self.MAX_SPEED
+            vy = (vy/speed)*self.MAX_SPEED
         return vx, vy
