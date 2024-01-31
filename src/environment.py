@@ -11,9 +11,10 @@ from behaviors.flee import FleeParticule
 from behaviors.circuit import CircuitBehavior
 
 class SteeringEnvironment():
-    _cback = (128,128,128)
-    _cfore = (10,10,10)
+    _cback = (128, 128, 128)
+    _cfore = (10, 10, 10)
     _cwidth = 30
+
     def __init__(self, screen, behavior):
         self.screen = screen
         # Three lists to store targets, particules and obstacles (in case of circuit behavior)
@@ -152,10 +153,6 @@ class SteeringEnvironment():
 
         running = True
         while running:
-            self.screen.fill((255, 255, 255))
-            restart_button_rect = draw_restart_button(self.screen)
-            self.__draw_targets()
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     print("Exiting")
@@ -166,18 +163,22 @@ class SteeringEnvironment():
                         running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # If left click add particule. If right click to add target.
+                    mouse_x, mouse_y = event.pos
                     if event.button == 1:
-                        mouse_x, mouse_y = event.pos
                         if restart_button_rect.collidepoint(mouse_x, mouse_y):
                             self.reset_environment()
                         else:
                             self.add_particule((mouse_x, mouse_y))
                     elif event.button == 3:  # Right click
-                        mouse_x, mouse_y = event.pos
                         if self.behavior == FleeParticule or self.behavior == SeekParticule:
                             self.add_target((mouse_x, mouse_y))
                         elif self.behavior == CircuitBehavior:
                             self.add_obstacle((mouse_x, mouse_y))
+
+            self.screen.fill((255, 255, 255))
+            mouse_pos = pygame.mouse.get_pos()
+            restart_button_rect = draw_restart_button(self.screen, mouse_pos)
+            self.__draw_targets()
 
             # Steering loop
             self.handle_collisions()

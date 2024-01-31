@@ -4,6 +4,11 @@ YELLOW = (226, 255, 33)
 GRAY = (200, 200, 200)
 MAUVE = (236, 174, 249)
 
+# Restart button colors
+SHADOW_COLOR = (150, 150, 150)
+RESTART_BUTTON_COLOR = (10, 150, 200)
+HOVER_BUTTON_COLOR = (12, 170, 220)
+TEXT_COLOR = (255, 255, 255)
 # Particule colors
 POSSIBLE_COLORS = [
     (253, 86, 86), # RED
