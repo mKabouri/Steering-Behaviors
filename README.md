@@ -4,7 +4,7 @@
 The project is inspired by the desire to simulate and visualize various steering behaviors. These behaviors are fundamental in game development, robotics, and AI.
 
 ### Description:
-This project implements several steering behaviors in Python using the Pygame library. It visualizes behaviors such as Seek, Pursuit, Avoid Obstacles, Flocking, and Circuit navigation. Each behavior is encapsulated in its own class with a clear interface, allowing for easy expansion and modification.
+This project implements several steering behaviors. It visualizes behaviors such as Seek, Flee, Flocking, and Circuit navigation. Each behavior is encapsulated in its own class with a clear interface, allowing for easy expansion and modification.
 
 My goal is to implement a small library of steering behavior for simulations.
 
