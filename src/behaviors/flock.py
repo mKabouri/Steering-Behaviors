@@ -37,8 +37,10 @@ class FlockingBehavior(Particule):
                     total += 1
         if total > 0:
             steer /= total
-            steer = (steer/np.linalg.norm(steer))*self.MAX_SPEED-np.array([self.v_x, self.v_y])
-            steer = np.clip(steer, -self.MAX_FORCE, self.MAX_FORCE)
+            norm = np.linalg.norm(steer)
+            if norm > 0:
+                steer = (steer/norm)*self.MAX_SPEED-np.array([self.v_x, self.v_y])
+                steer = np.clip(steer, -self.MAX_FORCE, self.MAX_FORCE)
         return steer
 
     def alignment(self):

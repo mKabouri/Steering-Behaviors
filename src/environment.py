@@ -3,6 +3,8 @@ import pygame.gfxdraw
 import math
 import random
 import numpy as np
+import os
+import imageio
 
 import config
 from buttons import draw_restart_button
@@ -162,6 +164,11 @@ class SteeringEnvironment():
         pygame.init()
         clock = pygame.time.Clock()    
 
+        # For gif
+        frames = []
+        frame_capture_rate = 5
+        iteration = 0
+
         running = True
         while running:
             for event in pygame.event.get():
@@ -185,6 +192,13 @@ class SteeringEnvironment():
                             self.add_target((mouse_x, mouse_y))
                         elif self.behavior == CircuitBehavior:
                             self.add_obstacle((mouse_x, mouse_y))
+
+            # Gif part
+            if iteration % frame_capture_rate == 0:
+                frame_filename = f"frame_{iteration}.png"
+                pygame.image.save(self.screen, frame_filename)
+                frames.append(frame_filename)
+            iteration += 1
 
             self.screen.fill((255, 255, 255))
             mouse_pos = pygame.mouse.get_pos()
@@ -212,4 +226,13 @@ class SteeringEnvironment():
             pygame.display.flip()
             clock.tick(config.FPS)
 
+        self.create_gif(frames)
         pygame.quit()
+    
+    def create_gif(self, frames, gif_name='flocking_behavior.gif', duration=0.1):
+        with imageio.get_writer(gif_name, mode='I', duration=duration) as writer:
+            for filename in frames:
+                image = imageio.imread(filename)
+                writer.append_data(image)
+                os.remove(filename)
+

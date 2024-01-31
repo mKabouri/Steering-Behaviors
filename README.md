@@ -14,6 +14,16 @@ I implemented all behaviors and the environement from scratch.
 
 My goal is to implement a small library of steering behavior for simulations.
 
+### Demonstration:
+* Flocking behavior:
+
+![Flocking Behavior Simulation](./flock_behavior.gif)
+
+* Circuit behavior:
+
+![Circuit Behavior Simulation](./circuit_behavior.gif)
+
+
 ### Commands:
 To run simulation:
 ```
